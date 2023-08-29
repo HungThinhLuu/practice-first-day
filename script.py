@@ -148,36 +148,41 @@ for ticker in tickers:
         print('For ticker {}, having {} report in {}'.format(ticker, report_number, year))
 
 #REQUIREMENT3
-# all_path_folder = ['output/VCB/2023/Kết quả Kinh doanh Quý/Quý 1']
+all_path_folder = ['output/VCB/2023/Kết quả Kinh doanh Quý/Quý 1']
 
-# def fetch_content(target_path) -> str:
-#     # Extract
-#     reader = PdfReader(target_path)
-#     print(reader.pages[1].images)
-#     # page = reader.pages[0]
-#     # pprint(page)
-#     # count = 0
+def convert_pdf_to_png(pdf_path): 
 
-#         # for image_file_object in page.images:
-#         #     print(image_file_object.data)
+    return 
 
-# for p in all_path_folder:
-#     for file in os.listdir(p):
-#         content = fetch_content(target_path=p + file)
-#         target_folder = p.replace(folder, text_folder)
-#         if not os.path.exists(target_folder):
-#             os.makedirs(target_folder)
-#         fp = open(target_folder + file.replace(target_report_type, '.txt'))
-#         fp.write(content)
+def fetch_content(target_path) -> str:
+    # Extract
+    reader = PdfReader(target_path)
+    print(reader.pages[1].images)
+    # page = reader.pages[0]
+    # pprint(page)
+    # count = 0
 
-# from pdf2image import convert_from_path
+        # for image_file_object in page.images:
+        #     print(image_file_object.data)
 
-# pages = convert_from_path('output/VCB/2023/Kết quả Kinh doanh Quý/Quý 1/Tài liệu nhà đầu tư Q1.2023.pdf')
-# pages[2].save('tmp.png', 'PNG')
-# print(pages)
+for p in all_path_folder:
+    for file in os.listdir(p):
+        content = fetch_content(target_path=p + file)
+        target_folder = p.replace(folder, text_folder)
+        if not os.path.exists(target_folder):
+            os.makedirs(target_folder)
+        fp = open(target_folder + file.replace(target_report_type, '.txt'))
+        fp.write(content)
 
-# import pytesseract
-# print(pytesseract.image_to_string('tmp.png'))
+from pdf2image import convert_from_path
+
+pages = convert_from_path('output/VCB/2023/Kết quả Kinh doanh Quý/Quý 1/Tài liệu nhà đầu tư Q1.2023.pdf')
+pages[2].save('tmp.png', 'PNG')
+print(pages)
+
+import pytesseract
+
+print(pytesseract.image_to_string('tmp.png'))
 
 
 
