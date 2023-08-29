@@ -6,10 +6,6 @@ import os
 import requests
 import bs4 
 
-from PyPDF2 import PdfReader
-
-from devtools import pprint
-
 folder="output"
 text_folder="extract"
 path = '{}/{}/{}/{}/{}/'
@@ -148,41 +144,51 @@ for ticker in tickers:
         print('For ticker {}, having {} report in {}'.format(ticker, report_number, year))
 
 #REQUIREMENT3
-all_path_folder = ['output/VCB/2023/Kết quả Kinh doanh Quý/Quý 1']
+
+from pdf2image import convert_from_path
 
 def convert_pdf_to_png(pdf_path): 
+    tmp_path = pdf_path.replace(folder, 'tmp').replace(target_report_type, '')
+    if not os.path.exists(tmp_path):
+        os.makedirs(tmp_path)
+    print(pdf_path)
+    pages = convert_from_path(pdf_path)
+    num = 1
+    for page in pages:
+        page.save(tmp_path + '/' + str(num).zfill(3) + '.png', 'PNG')
+        num += 1
+    return tmp_path
+# convert_pdf_to_png('output/VCB/2023/Kết quả Kinh doanh Quý/Quý 1/BCTC Hợp nhất Q1.2023.pdf')
+# list_png = list(os.listdir('tmp/VCB/2023/Kết quả Kinh doanh Quý/Quý 1/BCTC Hợp nhất Q1.2023'))
+# list_png.sort()
+# text = ''
+# for file in list_png:
+#     text = text + pytesseract.image_to_string('tmp/VCB/2023/Kết quả Kinh doanh Quý/Quý 1/BCTC Hợp nhất Q1.2023' + '/' + file, lang='vie') + '\n'
 
-    return 
+# print(text)
+def convert_png_to_text(png_path):
+    list_png = list(os.listdir(png_path))
+    list_png.sort()
+    text = ''
+    for file in list_png:
+        text = text + pytesseract.image_to_string(png_path + '/' + file, lang='vie') + '\n'
+    return text
 
 def fetch_content(target_path) -> str:
     # Extract
-    reader = PdfReader(target_path)
-    print(reader.pages[1].images)
-    # page = reader.pages[0]
-    # pprint(page)
-    # count = 0
+    tmp_path = convert_pdf_to_png(target_path)
+    content = convert_png_to_text(tmp_path)
+    return content
 
-        # for image_file_object in page.images:
-        #     print(image_file_object.data)
-
-for p in all_path_folder:
-    for file in os.listdir(p):
+for p in ['output/VCB/2023/Kết quả Kinh doanh Quý/Quý 1/']:#all_path_folder:
+    for file in ['BCTC Hợp nhất Q1.2023.pdf']:#os.listdir(p):
         content = fetch_content(target_path=p + file)
         target_folder = p.replace(folder, text_folder)
         if not os.path.exists(target_folder):
             os.makedirs(target_folder)
-        fp = open(target_folder + file.replace(target_report_type, '.txt'))
+        fp = open(target_folder + file.replace(target_report_type, '.txt'), 'w', encoding = 'utf8')
         fp.write(content)
 
-from pdf2image import convert_from_path
-
-pages = convert_from_path('output/VCB/2023/Kết quả Kinh doanh Quý/Quý 1/Tài liệu nhà đầu tư Q1.2023.pdf')
-pages[2].save('tmp.png', 'PNG')
-print(pages)
-
-import pytesseract
-
-print(pytesseract.image_to_string('tmp.png'))
 
 
 
